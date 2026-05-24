@@ -17,6 +17,9 @@ importers:
       nuxt-svg-icon-module:
         specifier: ^1.5.0
         version: 1.5.0(magicast@0.5.3)
+      sass:
+        specifier: ^1.99.0
+        version: 1.99.0
       vue:
         specifier: ^3.5.34
         version: 3.5.34(typescript@6.0.3)
@@ -7174,8 +7177,7 @@ snapshots:
 
   image-meta@0.2.2: {}
 
-  immutable@5.1.5:
-    optional: true
+  immutable@5.1.5: {}
 
   impound@1.1.5:
     dependencies:
@@ -8321,7 +8323,6 @@ snapshots:
       source-map-js: 1.2.1
     optionalDependencies:
       '@parcel/watcher': 2.5.6
-    optional: true
 
   sax@1.6.0: {}
 

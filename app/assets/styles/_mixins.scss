@@ -1,0 +1,130 @@
+@use 'variables' as *;
+
+// ─── Responsive ──────────────────────────────────────────────────────────────
+
+@mixin respond-to($bp) {
+  @if $bp == sm {
+    @media (min-width: $bp-sm) {
+      @content;
+    }
+  } @else if $bp == md {
+    @media (min-width: $bp-md) {
+      @content;
+    }
+  } @else if $bp == lg {
+    @media (min-width: $bp-lg) {
+      @content;
+    }
+  } @else if $bp == xl {
+    @media (min-width: $bp-xl) {
+      @content;
+    }
+  } @else if $bp == 2xl {
+    @media (min-width: $bp-2xl) {
+      @content;
+    }
+  }
+}
+
+@mixin respond-below($bp) {
+  @if $bp == sm {
+    @media (max-width: #{$bp-sm - 1}) {
+      @content;
+    }
+  } @else if $bp == md {
+    @media (max-width: #{$bp-md - 1}) {
+      @content;
+    }
+  } @else if $bp == lg {
+    @media (max-width: #{$bp-lg - 1}) {
+      @content;
+    }
+  } @else if $bp == xl {
+    @media (max-width: #{$bp-xl - 1}) {
+      @content;
+    }
+  }
+}
+
+// ─── Typography ──────────────────────────────────────────────────────────────
+
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin text-clamp($lines) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $lines;
+  overflow: hidden;
+}
+
+// ─── Layout ──────────────────────────────────────────────────────────────────
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin absolute-fill {
+  position: absolute;
+  inset: 0;
+}
+
+@mixin square($size) {
+  width: $size;
+  height: $size;
+}
+
+// ─── Visuals ─────────────────────────────────────────────────────────────────
+
+@mixin focus-ring($color: $color-accent) {
+  outline: 2px solid $color;
+  outline-offset: 2px;
+}
+
+@mixin hover-lift {
+  transition:
+    transform $transition-base,
+    box-shadow $transition-base;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-lg;
+  }
+}
+
+@mixin overlay($opacity: 0.5) {
+  &::after {
+    content: '';
+    @include absolute-fill;
+    background-color: rgba($color-black, $opacity);
+  }
+}
+
+// ─── Scrollbar ───────────────────────────────────────────────────────────────
+
+@mixin custom-scrollbar($width: 6px, $track: $color-gray-100, $thumb: $color-gray-300) {
+  scrollbar-width: thin;
+  scrollbar-color: $thumb $track;
+
+  &::-webkit-scrollbar {
+    width: $width;
+  }
+  &::-webkit-scrollbar-track {
+    background: $track;
+  }
+  &::-webkit-scrollbar-thumb {
+    background-color: $thumb;
+    border-radius: $radius-full;
+  }
+}

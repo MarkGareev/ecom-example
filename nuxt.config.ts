@@ -8,4 +8,18 @@ export default defineNuxtConfig({
     strict: true,
     typeCheck: true,
   },
+
+  css: ['~/assets/styles/main.scss'],
+
+  vite: {
+    css: {
+      preprocessorOptions: {
+        scss: {
+          // variables and mixins available in every component without importing
+          additionalData:
+            '@use "~/assets/styles/variables" as *; @use "~/assets/styles/mixins" as *;',
+        },
+      },
+    },
+  },
 })
