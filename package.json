@@ -13,7 +13,12 @@
     "lint:fix": "eslint . --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "typecheck": "nuxt typecheck"
+    "typecheck": "nuxt typecheck",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:studio": "prisma studio",
+    "db:seed": "prisma db seed"
   },
   "lint-staged": {
     "*.{ts,vue,js,mjs}": [
@@ -26,20 +31,30 @@
   },
   "dependencies": {
     "@pinia/nuxt": "^0.11.3",
+    "@prisma/adapter-pg": "^7.8.0",
+    "@prisma/client": "^7.8.0",
     "nuxt": "^4.4.6",
-    "nuxt-svg-icon-module": "^1.5.0",
+    "nuxt-svg-icon-module": "^1.5.1",
+    "pg": "^8.21.0",
     "sass": "^1.99.0",
     "vue": "^3.5.34",
     "vue-router": "^5.0.7"
   },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  },
   "devDependencies": {
     "@nuxt/eslint": "^1.15.2",
     "@types/node": "^25.9.0",
+    "@types/pg": "^8.20.0",
+    "dotenv": "^17.4.2",
     "eslint": "^10.4.0",
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.5",
     "prettier": "^3.8.3",
+    "prisma": "^7.8.0",
+    "tsx": "^4.22.2",
     "typescript": "^6.0.3",
     "vue-tsc": "^3.3.0"
   }
