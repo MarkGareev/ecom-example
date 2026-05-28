@@ -1,7 +1,11 @@
 {
   // https://nuxt.com/docs/guide/concepts/typescript
   "compilerOptions": {
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      "#prisma": ["./server/lib/prisma"],
+      "#db": ["./app/generated/prisma/client"]
+    }
   },
   "files": [],
   "references": [
