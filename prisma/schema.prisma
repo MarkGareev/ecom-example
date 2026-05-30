@@ -1,6 +1,6 @@
 generator client {
-  provider        = "prisma-client"
-  output          = "../app/generated/prisma"
+  provider = "prisma-client"
+  output   = "../app/generated/prisma"
 }
 
 datasource db {
@@ -16,17 +16,22 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  orders  Order[]
-  reviews Review[]
+  orders    Order[]
+  reviews   Review[]
+  cartItems CartItem[]
 
   @@map("users")
 }
 
 model Category {
-  id       String    @id @default(cuid())
+  id       String  @id @default(cuid())
   name     String
-  slug     String    @unique
+  slug     String  @unique
   imageUrl String?
+
+  parentId  String?
+  parent    Category?  @relation("CategoryTree", fields: [parentId], references: [id])
+  children  Category[] @relation("CategoryTree")
 
   products Product[]
 
@@ -39,6 +44,7 @@ model Product {
   slug        String   @unique
   description String?
   price       Decimal  @db.Decimal(10, 2)
+  discount    Int?
   stock       Int      @default(0)
   imageUrl    String?
   createdAt   DateTime @default(now())
@@ -49,6 +55,7 @@ model Product {
 
   orderItems OrderItem[]
   reviews    Review[]
+  cartItems  CartItem[]
 
   @@map("products")
 }
@@ -93,6 +100,33 @@ model Review {
   product   Product @relation(fields: [productId], references: [id])
 
   @@map("reviews")
+}
+
+model CartItem {
+  id       String @id @default(cuid())
+  quantity Int    @default(1)
+
+  userId    String
+  user      User    @relation(fields: [userId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+
+  @@unique([userId, productId])
+  @@map("cart_items")
+}
+
+model Article {
+  id          String    @id @default(cuid())
+  title       String
+  slug        String    @unique
+  excerpt     String?
+  content     String
+  imageUrl    String?
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("articles")
 }
 
 enum Role {
