@@ -4,7 +4,8 @@
     "types": ["node"],
     "paths": {
       "#prisma": ["./server/lib/prisma"],
-      "#db": ["./app/generated/prisma/client"]
+      "#db": ["./app/generated/prisma/client"],
+      "#server/*": ["./server/lib/*"]
     }
   },
   "files": [],

@@ -6,6 +6,7 @@ export default defineNuxtConfig({
     alias: {
       '#prisma': '/server/lib/prisma',
       '#db': '/app/generated/prisma/client',
+      '#server': '/server/lib',
     },
     typescript: {
       tsConfig: {
@@ -13,6 +14,7 @@ export default defineNuxtConfig({
           paths: {
             '#prisma': ['../server/lib/prisma'],
             '#db': ['../app/generated/prisma/client'],
+            '#server/*': ['../server/lib/*'],
           },
         },
       },
