@@ -1,14 +1,17 @@
 import { prisma } from '#prisma'
+import { articlesQuerySchema } from '#server/validation'
+import { buildArticlesSkip } from '#server/articles'
+import { buildPageMeta } from '#server/products'
 
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
-  const page = Number(query.page) || 1
-  const limit = Math.min(Number(query.limit) || 10, 50)
-  const skip = (page - 1) * limit
+  const query = articlesQuerySchema.parse(getQuery(event))
+  const { page, limit } = query
+  const skip = buildArticlesSkip(query)
+  const published = { publishedAt: { not: null, lte: new Date() } } as const
 
   const [articles, total] = await Promise.all([
     prisma.article.findMany({
-      where: { publishedAt: { not: null, lte: new Date() } },
+      where: published,
       select: {
         id: true,
         title: true,
@@ -21,18 +24,11 @@ export default defineEventHandler(async (event) => {
       skip,
       take: limit,
     }),
-    prisma.article.count({
-      where: { publishedAt: { not: null, lte: new Date() } },
-    }),
+    prisma.article.count({ where: published }),
   ])
 
   return {
     data: articles,
-    meta: {
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    },
+    meta: buildPageMeta(total, page, limit),
   }
 })

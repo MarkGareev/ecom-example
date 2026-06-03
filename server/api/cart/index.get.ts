@@ -1,12 +1,8 @@
 import { prisma } from '#prisma'
+import { cartGetSchema } from '#server/validation'
 
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
-  const userId = String(query.userId || '')
-
-  if (!userId) {
-    throw createError({ statusCode: 400, message: 'userId is required' })
-  }
+  const { userId } = cartGetSchema.parse(getQuery(event))
 
   const items = await prisma.cartItem.findMany({
     where: { userId },

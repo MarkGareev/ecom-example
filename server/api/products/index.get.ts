@@ -1,9 +1,12 @@
 import { prisma } from '#prisma'
-import { buildProductsQuery, buildPageMeta } from '#server/products'
+import { productsQuerySchema } from '#server/validation'
+import { buildProductsWhere, buildPageMeta } from '#server/products'
 
 export default defineEventHandler(async (event) => {
-  const query = getQuery(event)
-  const { page, limit, skip, orderBy, where } = buildProductsQuery(query)
+  const query = productsQuerySchema.parse(getQuery(event))
+  const { page, limit, sort, order } = query
+  const skip = (page - 1) * limit
+  const where = buildProductsWhere(query)
 
   const [products, total] = await Promise.all([
     prisma.product.findMany({
@@ -19,7 +22,7 @@ export default defineEventHandler(async (event) => {
         createdAt: true,
         category: { select: { id: true, name: true, slug: true } },
       },
-      orderBy,
+      orderBy: { [sort]: order },
       skip,
       take: limit,
     }),
