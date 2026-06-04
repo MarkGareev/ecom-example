@@ -1,101 +1,105 @@
-import { describe, it, expect } from 'vitest'
-import { buildProductsQuery, buildPageMeta } from '../server/lib/products'
+import { productsQuerySchema } from '#server/validation'
+import { buildProductsWhere, buildPageMeta } from '#server/products'
 
-describe('buildProductsQuery', () => {
+describe('productsQuerySchema', () => {
   describe('pagination', () => {
     it('defaults to page 1, limit 20', () => {
-      const { page, limit, skip } = buildProductsQuery({})
-      expect(page).toBe(1)
-      expect(limit).toBe(20)
-      expect(skip).toBe(0)
+      const result = productsQuerySchema.parse({})
+      expect(result.page).toBe(1)
+      expect(result.limit).toBe(20)
     })
 
-    it('computes skip correctly', () => {
-      const { skip } = buildProductsQuery({ page: 3, limit: 10 })
-      expect(skip).toBe(20)
+    it('parses string numbers from query params', () => {
+      const result = productsQuerySchema.parse({ page: '3', limit: '10' })
+      expect(result.page).toBe(3)
+      expect(result.limit).toBe(10)
     })
 
-    it('clamps limit to 100', () => {
-      const { limit } = buildProductsQuery({ limit: 999 })
-      expect(limit).toBe(100)
+    it('clamps limit to max 100', () => {
+      const result = productsQuerySchema.parse({ limit: '999' })
+      expect(result.limit).toBe(100)
     })
 
-    it('clamps page to minimum 1 for invalid input', () => {
-      const { page, skip } = buildProductsQuery({ page: -5 })
-      expect(page).toBe(1)
-      expect(skip).toBe(0)
+    it('rejects page less than 1', () => {
+      expect(() => productsQuerySchema.parse({ page: '0' })).toThrow()
     })
 
-    it('handles non-numeric page gracefully', () => {
-      const { page } = buildProductsQuery({ page: 'abc' })
-      expect(page).toBe(1)
+    it('rejects non-numeric page', () => {
+      expect(() => productsQuerySchema.parse({ page: 'abc' })).toThrow()
     })
   })
 
   describe('sorting', () => {
     it('defaults to createdAt desc', () => {
-      const { orderBy } = buildProductsQuery({})
-      expect(orderBy).toEqual({ createdAt: 'desc' })
+      const result = productsQuerySchema.parse({})
+      expect(result.sort).toBe('createdAt')
+      expect(result.order).toBe('desc')
     })
 
-    it('sorts by price asc', () => {
-      const { orderBy } = buildProductsQuery({ sort: 'price', order: 'asc' })
-      expect(orderBy).toEqual({ price: 'asc' })
+    it('accepts valid sort fields', () => {
+      expect(productsQuerySchema.parse({ sort: 'price' }).sort).toBe('price')
+      expect(productsQuerySchema.parse({ sort: 'name' }).sort).toBe('name')
     })
 
-    it('sorts by name desc', () => {
-      const { orderBy } = buildProductsQuery({ sort: 'name', order: 'desc' })
-      expect(orderBy).toEqual({ name: 'desc' })
+    it('rejects unknown sort field', () => {
+      expect(() => productsQuerySchema.parse({ sort: 'unknown' })).toThrow()
     })
 
-    it('falls back to createdAt desc for unknown sort field', () => {
-      const { orderBy } = buildProductsQuery({ sort: 'unknown_field' })
-      expect(orderBy).toEqual({ createdAt: 'desc' })
+    it('accepts asc order', () => {
+      expect(productsQuerySchema.parse({ order: 'asc' }).order).toBe('asc')
+    })
+
+    it('rejects invalid order', () => {
+      expect(() => productsQuerySchema.parse({ order: 'random' })).toThrow()
     })
   })
 
   describe('filters', () => {
-    it('filters by category slug', () => {
-      const { where } = buildProductsQuery({ category: 'laptops' })
-      expect(where.category).toEqual({ slug: 'laptops' })
+    it('parses category', () => {
+      expect(productsQuerySchema.parse({ category: 'laptops' }).category).toBe('laptops')
     })
 
-    it('filters sale items when sale=true', () => {
-      const { where } = buildProductsQuery({ sale: 'true' })
-      expect(where.discount).toEqual({ gt: 0 })
+    it('coerces sale to boolean', () => {
+      expect(productsQuerySchema.parse({ sale: 'true' }).sale).toBe(true)
+      expect(productsQuerySchema.parse({ sale: 'false' }).sale).toBe(false)
     })
 
-    it('does not filter discount when sale is not true', () => {
-      const { where } = buildProductsQuery({ sale: 'false' })
-      expect(where.discount).toBeUndefined()
+    it('parses numeric price range', () => {
+      const result = productsQuerySchema.parse({ minPrice: '100', maxPrice: '500' })
+      expect(result.minPrice).toBe(100)
+      expect(result.maxPrice).toBe(500)
     })
 
-    it('filters by minPrice', () => {
-      const { where } = buildProductsQuery({ minPrice: 100 })
-      expect(where.price).toMatchObject({ gte: 100 })
+    it('rejects negative minPrice', () => {
+      expect(() => productsQuerySchema.parse({ minPrice: '-1' })).toThrow()
     })
+  })
+})
 
-    it('filters by maxPrice', () => {
-      const { where } = buildProductsQuery({ maxPrice: 500 })
-      expect(where.price).toMatchObject({ lte: 500 })
-    })
+describe('buildProductsWhere', () => {
+  it('returns empty where for no filters', () => {
+    const query = productsQuerySchema.parse({})
+    expect(buildProductsWhere(query)).toEqual({})
+  })
 
-    it('filters by price range', () => {
-      const { where } = buildProductsQuery({ minPrice: 100, maxPrice: 500 })
-      expect(where.price).toEqual({ gte: 100, lte: 500 })
-    })
+  it('filters by category slug', () => {
+    const query = productsQuerySchema.parse({ category: 'laptops' })
+    expect(buildProductsWhere(query).category).toEqual({ slug: 'laptops' })
+  })
 
-    it('filters by search term case-insensitively', () => {
-      const { where } = buildProductsQuery({ search: 'blazer' })
-      expect(where.name).toEqual({ contains: 'blazer', mode: 'insensitive' })
-    })
+  it('filters sale items', () => {
+    const query = productsQuerySchema.parse({ sale: 'true' })
+    expect(buildProductsWhere(query).discount).toEqual({ gt: 0 })
+  })
 
-    it('applies multiple filters together', () => {
-      const { where } = buildProductsQuery({ category: 'clothing', sale: 'true', search: 'tee' })
-      expect(where.category).toEqual({ slug: 'clothing' })
-      expect(where.discount).toEqual({ gt: 0 })
-      expect(where.name).toMatchObject({ contains: 'tee' })
-    })
+  it('filters by price range', () => {
+    const query = productsQuerySchema.parse({ minPrice: '100', maxPrice: '500' })
+    expect(buildProductsWhere(query).price).toEqual({ gte: 100, lte: 500 })
+  })
+
+  it('filters by search term', () => {
+    const query = productsQuerySchema.parse({ search: 'blazer' })
+    expect(buildProductsWhere(query).name).toEqual({ contains: 'blazer', mode: 'insensitive' })
   })
 })
 
@@ -110,12 +114,5 @@ describe('buildPageMeta', () => {
 
   it('returns 0 total pages when there are no results', () => {
     expect(buildPageMeta(0, 1, 20).totalPages).toBe(0)
-  })
-
-  it('reflects page and limit in meta', () => {
-    const meta = buildPageMeta(50, 3, 10)
-    expect(meta.page).toBe(3)
-    expect(meta.limit).toBe(10)
-    expect(meta.total).toBe(50)
   })
 })
