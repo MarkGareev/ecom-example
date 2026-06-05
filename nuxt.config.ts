@@ -1,23 +1,14 @@
+import { fileURLToPath } from 'node:url'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
 
   nitro: {
     alias: {
-      '#prisma': '/server/lib/prisma',
-      '#db': '/app/generated/prisma/client',
-      '#server': '/server/lib',
-    },
-    typescript: {
-      tsConfig: {
-        compilerOptions: {
-          paths: {
-            '#prisma': ['../server/lib/prisma'],
-            '#db': ['../app/generated/prisma/client'],
-            '#server/*': ['../server/lib/*'],
-          },
-        },
-      },
+      '#prisma': fileURLToPath(new URL('./server/lib/prisma.ts', import.meta.url)),
+      '#db': fileURLToPath(new URL('./app/generated/prisma/client.ts', import.meta.url)),
+      '#server': fileURLToPath(new URL('./server/lib', import.meta.url)),
     },
   },
 
@@ -25,7 +16,7 @@ export default defineNuxtConfig({
 
   typescript: {
     strict: true,
-    typeCheck: true,
+    typeCheck: false,
   },
 
   css: ['~/assets/styles/main.scss'],

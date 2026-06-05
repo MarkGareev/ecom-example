@@ -1,10 +1,13 @@
 {
   // https://nuxt.com/docs/guide/concepts/typescript
   "compilerOptions": {
-    "types": ["node"],
+    "types": ["node", "vitest/globals"],
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".",
     "paths": {
       "#prisma": ["./server/lib/prisma"],
       "#db": ["./app/generated/prisma/client"],
+      "#server": ["./server/lib"],
       "#server/*": ["./server/lib/*"]
     }
   },
