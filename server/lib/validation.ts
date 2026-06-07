@@ -52,6 +52,23 @@ export const cartDeleteSchema = z.object({
   userId: z.string().min(1),
 })
 
+export const registerSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(8),
+  name: z.string().min(1).optional(),
+})
+
+export const loginSchema = z.object({
+  email: z.string().email(),
+  password: z.string().min(1),
+})
+
+export const refreshSchema = z.object({
+  refreshToken: z.string().min(1),
+})
+
 export type ProductsQuery = z.infer<typeof productsQuerySchema>
 export type ArticlesQuery = z.infer<typeof articlesQuerySchema>
 export type CartPostBody = z.infer<typeof cartPostSchema>
+export type RegisterBody = z.infer<typeof registerSchema>
+export type LoginBody = z.infer<typeof loginSchema>
