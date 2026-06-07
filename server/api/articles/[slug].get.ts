@@ -2,11 +2,14 @@ import { prisma } from '#prisma'
 import { articleSlugSchema } from '#server/validation'
 
 export default defineEventHandler(async (event) => {
-  const { slug } = articleSlugSchema.parse({ slug: getRouterParam(event, 'slug') })
+  const result = articleSlugSchema.safeParse({ slug: getRouterParam(event, 'slug') })
+  if (!result.success) {
+    throw createError({ statusCode: 400, message: 'Invalid slug' })
+  }
 
   const article = await prisma.article.findFirst({
     where: {
-      slug,
+      slug: result.data.slug,
       publishedAt: { not: null, lte: new Date() },
     },
   })

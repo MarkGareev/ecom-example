@@ -24,12 +24,3 @@ export function buildProductsWhere(query: ProductsQuery): Prisma.ProductWhereInp
 
   return where
 }
-
-export function buildPageMeta(total: number, page: number, limit: number) {
-  return {
-    total,
-    page,
-    limit,
-    totalPages: Math.ceil(total / limit),
-  }
-}

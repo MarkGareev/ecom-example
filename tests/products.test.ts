@@ -1,5 +1,6 @@
 import { productsQuerySchema } from '#server/validation'
-import { buildProductsWhere, buildPageMeta } from '#server/products'
+import { buildProductsWhere } from '#server/products'
+import { buildPageMeta } from '#server/pagination'
 
 describe('productsQuerySchema', () => {
   describe('pagination', () => {

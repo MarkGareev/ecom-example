@@ -29,6 +29,10 @@ describe('cartPostSchema', () => {
     expect(() => cartPostSchema.parse({ userId: 'u1', productId: 'p1', quantity: 0 })).toThrow()
   })
 
+  it('rejects quantity above 100', () => {
+    expect(() => cartPostSchema.parse({ userId: 'u1', productId: 'p1', quantity: 101 })).toThrow()
+  })
+
   it('rejects missing userId', () => {
     expect(() => cartPostSchema.parse({ productId: 'p1' })).toThrow()
   })
@@ -43,15 +47,22 @@ describe('cartPostSchema', () => {
 })
 
 describe('cartDeleteSchema', () => {
-  it('parses a valid id', () => {
-    expect(cartDeleteSchema.parse({ id: 'abc123' })).toEqual({ id: 'abc123' })
+  it('parses a valid id and userId', () => {
+    expect(cartDeleteSchema.parse({ id: 'abc123', userId: 'u1' })).toEqual({
+      id: 'abc123',
+      userId: 'u1',
+    })
   })
 
   it('rejects missing id', () => {
-    expect(() => cartDeleteSchema.parse({})).toThrow()
+    expect(() => cartDeleteSchema.parse({ userId: 'u1' })).toThrow()
+  })
+
+  it('rejects missing userId', () => {
+    expect(() => cartDeleteSchema.parse({ id: 'abc123' })).toThrow()
   })
 
   it('rejects empty id', () => {
-    expect(() => cartDeleteSchema.parse({ id: '' })).toThrow()
+    expect(() => cartDeleteSchema.parse({ id: '', userId: 'u1' })).toThrow()
   })
 })

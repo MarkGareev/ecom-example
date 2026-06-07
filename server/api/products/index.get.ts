@@ -1,12 +1,16 @@
 import { prisma } from '#prisma'
 import { productsQuerySchema } from '#server/validation'
-import { buildProductsWhere, buildPageMeta } from '#server/products'
+import { buildProductsWhere } from '#server/products'
+import { buildSkip, buildPageMeta } from '#server/pagination'
 
 export default defineEventHandler(async (event) => {
-  const query = productsQuerySchema.parse(getQuery(event))
-  const { page, limit, sort, order } = query
-  const skip = (page - 1) * limit
-  const where = buildProductsWhere(query)
+  const result = productsQuerySchema.safeParse(getQuery(event))
+  if (!result.success) {
+    throw createError({ statusCode: 400, message: 'Invalid query parameters' })
+  }
+
+  const { page, limit, sort, order } = result.data
+  const where = buildProductsWhere(result.data)
 
   const [products, total] = await Promise.all([
     prisma.product.findMany({
@@ -23,7 +27,7 @@ export default defineEventHandler(async (event) => {
         category: { select: { id: true, name: true, slug: true } },
       },
       orderBy: { [sort]: order },
-      skip,
+      skip: buildSkip(page, limit),
       take: limit,
     }),
     prisma.product.count({ where }),

@@ -1,12 +1,14 @@
 import { prisma } from '#prisma'
 import { articlesQuerySchema } from '#server/validation'
-import { buildArticlesSkip } from '#server/articles'
-import { buildPageMeta } from '#server/products'
+import { buildSkip, buildPageMeta } from '#server/pagination'
 
 export default defineEventHandler(async (event) => {
-  const query = articlesQuerySchema.parse(getQuery(event))
-  const { page, limit } = query
-  const skip = buildArticlesSkip(query)
+  const result = articlesQuerySchema.safeParse(getQuery(event))
+  if (!result.success) {
+    throw createError({ statusCode: 400, message: 'Invalid query parameters' })
+  }
+
+  const { page, limit } = result.data
   const published = { publishedAt: { not: null, lte: new Date() } } as const
 
   const [articles, total] = await Promise.all([
@@ -21,7 +23,7 @@ export default defineEventHandler(async (event) => {
         publishedAt: true,
       },
       orderBy: { publishedAt: 'desc' },
-      skip,
+      skip: buildSkip(page, limit),
       take: limit,
     }),
     prisma.article.count({ where: published }),

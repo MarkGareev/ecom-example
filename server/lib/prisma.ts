@@ -12,6 +12,4 @@ const globalWithPrisma = globalThis as GlobalWithPrisma
 
 export const prisma = globalWithPrisma.prisma ?? createPrismaClient()
 
-if (process.env.NODE_ENV !== 'production') {
-  globalWithPrisma.prisma = prisma
-}
+globalWithPrisma.prisma = prisma

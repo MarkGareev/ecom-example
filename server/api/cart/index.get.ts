@@ -2,10 +2,13 @@ import { prisma } from '#prisma'
 import { cartGetSchema } from '#server/validation'
 
 export default defineEventHandler(async (event) => {
-  const { userId } = cartGetSchema.parse(getQuery(event))
+  const result = cartGetSchema.safeParse(getQuery(event))
+  if (!result.success) {
+    throw createError({ statusCode: 400, message: 'Invalid query parameters' })
+  }
 
   const items = await prisma.cartItem.findMany({
-    where: { userId },
+    where: { userId: result.data.userId },
     include: {
       product: {
         select: {

@@ -44,11 +44,12 @@ export const cartGetSchema = z.object({
 export const cartPostSchema = z.object({
   userId: z.string().min(1),
   productId: z.string().min(1),
-  quantity: z.coerce.number().int().min(1).default(1),
+  quantity: z.coerce.number().int().min(1).max(100).default(1),
 })
 
 export const cartDeleteSchema = z.object({
   id: z.string().min(1),
+  userId: z.string().min(1),
 })
 
 export type ProductsQuery = z.infer<typeof productsQuerySchema>
