@@ -12,7 +12,12 @@ export default defineNuxtConfig({
     },
   },
 
-  modules: ['@pinia/nuxt', 'nuxt-svg-icon-module', '@nuxt/eslint'],
+  modules: ['@pinia/nuxt', 'nuxt-svg-icon-module', '@nuxt/eslint', '@scalar/nuxt'],
+
+  scalar: {
+    pathRouting: { basePath: '/api-docs' },
+    openApiUrl: '/api/openapi.json',
+  },
 
   typescript: {
     strict: true,

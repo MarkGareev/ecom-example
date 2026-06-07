@@ -115,31 +115,9 @@ pnpm format            # Prettier
 pnpm test              # run unit tests
 ```
 
-## API Endpoints
+## API Docs
 
-| Method   | Path                  | Description                             |
-| -------- | --------------------- | --------------------------------------- |
-| `GET`    | `/api/categories`     | Category tree                           |
-| `GET`    | `/api/products`       | Products with filters, sort, pagination |
-| `GET`    | `/api/articles`       | Article list with pagination            |
-| `GET`    | `/api/articles/:slug` | Single article                          |
-| `GET`    | `/api/cart`           | Get cart items                          |
-| `POST`   | `/api/cart`           | Add or update cart item                 |
-| `DELETE` | `/api/cart`           | Remove cart item                        |
-
-### Product filters
-
-| Param      | Type                             | Description              |
-| ---------- | -------------------------------- | ------------------------ |
-| `category` | string                           | Filter by category slug  |
-| `sale`     | boolean                          | Sale items only          |
-| `minPrice` | number                           | Minimum price            |
-| `maxPrice` | number                           | Maximum price            |
-| `search`   | string                           | Search by name           |
-| `sort`     | `price` \| `createdAt` \| `name` | Sort field               |
-| `order`    | `asc` \| `desc`                  | Sort direction           |
-| `page`     | number                           | Page number              |
-| `limit`    | number                           | Items per page (max 100) |
+Interactive API documentation is available at `http://localhost:3000/api-docs` when the dev server is running (powered by [Scalar](https://scalar.com)).
 
 ## Project Structure
 
@@ -161,7 +139,7 @@ pnpm test              # run unit tests
 
 ## Roadmap
 
-- [ ] Authentication (JWT + refresh tokens)
+- [x] Authentication (JWT + refresh tokens)
 - [ ] Product catalog pages with filtering UI
 - [ ] Product detail page
 - [ ] Shopping cart UI

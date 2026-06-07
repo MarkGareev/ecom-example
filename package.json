@@ -48,6 +48,7 @@
     "@pinia/nuxt": "^0.11.3",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
+    "@scalar/nuxt": "^0.6.42",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.3",
     "nuxt": "^4.4.7",
