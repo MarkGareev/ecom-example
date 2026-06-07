@@ -37,19 +37,9 @@ export const articleSlugSchema = z.object({
   slug: z.string().min(1),
 })
 
-export const cartGetSchema = z.object({
-  userId: z.string().min(1),
-})
-
 export const cartPostSchema = z.object({
-  userId: z.string().min(1),
   productId: z.string().min(1),
   quantity: z.coerce.number().int().min(1).max(100).default(1),
-})
-
-export const cartDeleteSchema = z.object({
-  id: z.string().min(1),
-  userId: z.string().min(1),
 })
 
 export const registerSchema = z.object({
@@ -70,5 +60,6 @@ export const refreshSchema = z.object({
 export type ProductsQuery = z.infer<typeof productsQuerySchema>
 export type ArticlesQuery = z.infer<typeof articlesQuerySchema>
 export type CartPostBody = z.infer<typeof cartPostSchema>
+
 export type RegisterBody = z.infer<typeof registerSchema>
 export type LoginBody = z.infer<typeof loginSchema>

@@ -1,16 +1,18 @@
 import { prisma } from '#prisma'
-import { cartDeleteSchema } from '#server/validation'
+import { requireAuth } from '#server/auth'
+import { z } from 'zod'
+
+const schema = z.object({ id: z.string().min(1) })
 
 export default defineEventHandler(async (event) => {
-  const result = cartDeleteSchema.safeParse({
-    id: getRouterParam(event, 'id'),
-    userId: getQuery(event).userId,
-  })
+  const { sub: userId } = requireAuth(event)
+
+  const result = schema.safeParse({ id: getRouterParam(event, 'id') })
   if (!result.success) {
     throw createError({ statusCode: 400, message: 'Invalid parameters' })
   }
 
-  const { id, userId } = result.data
+  const { id } = result.data
 
   const item = await prisma.cartItem.findUnique({ where: { id } })
   if (!item || item.userId !== userId) {
