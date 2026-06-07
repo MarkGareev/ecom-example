@@ -1,26 +1,29 @@
 .PHONY: dev dev-down dev-logs up down logs db studio migrate push seed
 
+COMPOSE_DEV = docker compose -f docker/docker-compose.dev.yml --env-file .env
+COMPOSE_PROD = docker compose -f docker/docker-compose.yml --env-file .env
+
 # ─── Dev ─────────────────────────────────────────────────────────────────────
 
 dev:
-	docker compose -f docker/docker-compose.dev.yml up -d
+	$(COMPOSE_DEV) up -d
 
 dev-down:
-	docker compose -f docker/docker-compose.dev.yml down
+	$(COMPOSE_DEV) down
 
 dev-logs:
-	docker compose -f docker/docker-compose.dev.yml logs -f app
+	$(COMPOSE_DEV) logs -f app
 
 # ─── Production ──────────────────────────────────────────────────────────────
 
 up:
-	docker compose -f docker/docker-compose.yml up -d --build
+	$(COMPOSE_PROD) up -d --build
 
 down:
-	docker compose -f docker/docker-compose.yml down
+	$(COMPOSE_PROD) down
 
 logs:
-	docker compose -f docker/docker-compose.yml logs -f app
+	$(COMPOSE_PROD) logs -f app
 
 # ─── Prisma ──────────────────────────────────────────────────────────────────
 
