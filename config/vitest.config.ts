@@ -8,9 +8,9 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '#prisma': resolve(__dirname, 'server/lib/prisma'),
-      '#db': resolve(__dirname, 'app/generated/prisma/client'),
-      '#server': resolve(__dirname, 'server/lib'),
+      '#prisma': resolve(__dirname, '../server/lib/prisma'),
+      '#db': resolve(__dirname, '../app/generated/prisma/client'),
+      '#server': resolve(__dirname, '../server/lib'),
     },
   },
 })

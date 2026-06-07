@@ -3,24 +3,24 @@
 # ─── Dev ─────────────────────────────────────────────────────────────────────
 
 dev:
-	docker compose -f docker-compose.dev.yml up -d
+	docker compose -f docker/docker-compose.dev.yml up -d
 
 dev-down:
-	docker compose -f docker-compose.dev.yml down
+	docker compose -f docker/docker-compose.dev.yml down
 
 dev-logs:
-	docker compose -f docker-compose.dev.yml logs -f app
+	docker compose -f docker/docker-compose.dev.yml logs -f app
 
 # ─── Production ──────────────────────────────────────────────────────────────
 
 up:
-	docker compose up -d --build
+	docker compose -f docker/docker-compose.yml up -d --build
 
 down:
-	docker compose down
+	docker compose -f docker/docker-compose.yml down
 
 logs:
-	docker compose logs -f app
+	docker compose -f docker/docker-compose.yml logs -f app
 
 # ─── Prisma ──────────────────────────────────────────────────────────────────
 

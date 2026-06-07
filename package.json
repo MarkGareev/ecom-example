@@ -11,18 +11,18 @@
     "prepare": "husky",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "lint:styles": "stylelint \"app/**/*.{scss,vue}\"",
-    "lint:styles:fix": "stylelint \"app/**/*.{scss,vue}\" --fix",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
+    "lint:styles": "stylelint \"app/**/*.{scss,vue}\" --config config/.stylelintrc.json",
+    "lint:styles:fix": "stylelint \"app/**/*.{scss,vue}\" --config config/.stylelintrc.json --fix",
+    "format": "prettier --write . --config config/.prettierrc",
+    "format:check": "prettier --check . --config config/.prettierrc",
     "typecheck": "nuxt typecheck",
     "db:generate": "prisma generate",
     "db:migrate": "prisma migrate dev",
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "db:seed": "prisma db seed",
-    "test": "vitest run",
-    "test:watch": "vitest"
+    "test": "vitest run --config config/vitest.config.ts",
+    "test:watch": "vitest --config config/vitest.config.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -30,18 +30,18 @@
   "lint-staged": {
     "*.{ts,vue,js,mjs}": [
       "eslint --fix",
-      "prettier --write"
+      "prettier --write --config config/.prettierrc"
     ],
     "*.{scss,css}": [
-      "stylelint --fix",
-      "prettier --write"
+      "stylelint --fix --config config/.stylelintrc.json",
+      "prettier --write --config config/.prettierrc"
     ],
     "*.vue": [
-      "stylelint --fix",
-      "prettier --write"
+      "stylelint --fix --config config/.stylelintrc.json",
+      "prettier --write --config config/.prettierrc"
     ],
     "*.{json,md}": [
-      "prettier --write"
+      "prettier --write --config config/.prettierrc"
     ]
   },
   "dependencies": {

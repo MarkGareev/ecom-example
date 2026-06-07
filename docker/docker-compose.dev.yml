@@ -17,12 +17,18 @@ services:
       retries: 5
 
   app:
-    build: .
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
     restart: unless-stopped
     ports:
       - '${APP_PORT}:3000'
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/shop?schema=public
+      CI: 'true'
+    volumes:
+      - ..:/app
+      - /app/node_modules
     depends_on:
       db:
         condition: service_healthy

@@ -18,18 +18,13 @@ services:
 
   app:
     build:
-      context: .
-      dockerfile: Dockerfile.dev
+      context: ..
+      dockerfile: docker/Dockerfile
     restart: unless-stopped
     ports:
       - '${APP_PORT}:3000'
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/shop?schema=public
-      CI: 'true'
-    volumes:
-      - .:/app
-      - /app/node_modules
-      - /app/.nuxt
     depends_on:
       db:
         condition: service_healthy
