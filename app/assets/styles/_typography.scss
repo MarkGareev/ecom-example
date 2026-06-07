@@ -27,20 +27,20 @@
 }
 
 .heading-6 {
+  color: $color-gray-500;
   font-size: $font-size-md;
   font-weight: $font-weight-medium;
-  color: $color-gray-500;
 }
 
 .body-text {
+  color: $color-gray-600;
   font-size: $font-size-md;
   line-height: $line-height-relaxed;
-  color: $color-gray-600;
 }
 
 .caption {
-  font-size: $font-size-sm;
   color: $color-gray-500;
+  font-size: $font-size-sm;
 }
 
 .link {

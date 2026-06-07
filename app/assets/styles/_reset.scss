@@ -15,14 +15,14 @@ html {
 }
 
 body {
+  background-color: $color-white;
+  color: $color-gray-800;
   font-family: $font-family-base;
   font-size: $font-size-md;
-  font-weight: $font-weight-regular;
-  line-height: $line-height-base;
-  color: $color-gray-800;
-  background-color: $color-white;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-weight: $font-weight-regular;
+  line-height: $line-height-base;
 }
 
 a {
@@ -38,17 +38,17 @@ ol {
 img,
 video,
 svg {
-  max-width: 100%;
   display: block;
+  max-width: 100%;
 }
 
 button {
-  cursor: pointer;
-  border: none;
   background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
   font-family: inherit;
   font-size: inherit;
-  color: inherit;
 }
 
 input,

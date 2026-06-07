@@ -55,8 +55,8 @@
 }
 
 @mixin text-clamp($lines) {
-  display: -webkit-box;
   -webkit-box-orient: vertical;
+  display: -webkit-box;
   -webkit-line-clamp: $lines;
   overflow: hidden;
 }
@@ -64,25 +64,25 @@
 // ─── Layout ──────────────────────────────────────────────────────────────────
 
 @mixin flex-center {
-  display: flex;
   align-items: center;
+  display: flex;
   justify-content: center;
 }
 
 @mixin flex-between {
-  display: flex;
   align-items: center;
+  display: flex;
   justify-content: space-between;
 }
 
 @mixin absolute-fill {
-  position: absolute;
   inset: 0;
+  position: absolute;
 }
 
 @mixin square($size) {
-  width: $size;
   height: $size;
+  width: $size;
 }
 
 // ─── Visuals ─────────────────────────────────────────────────────────────────
@@ -98,31 +98,33 @@
     box-shadow $transition-base;
 
   &:hover {
-    transform: translateY(-2px);
     box-shadow: $shadow-lg;
+    transform: translateY(-2px);
   }
 }
 
 @mixin overlay($opacity: 0.5) {
   &::after {
+    background-color: rgba($color-black, $opacity);
     content: '';
     @include absolute-fill;
-    background-color: rgba($color-black, $opacity);
   }
 }
 
 // ─── Scrollbar ───────────────────────────────────────────────────────────────
 
 @mixin custom-scrollbar($width: 6px, $track: $color-gray-100, $thumb: $color-gray-300) {
-  scrollbar-width: thin;
   scrollbar-color: $thumb $track;
+  scrollbar-width: thin;
 
   &::-webkit-scrollbar {
     width: $width;
   }
+
   &::-webkit-scrollbar-track {
     background: $track;
   }
+
   &::-webkit-scrollbar-thumb {
     background-color: $thumb;
     border-radius: $radius-full;
