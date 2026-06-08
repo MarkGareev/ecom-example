@@ -148,3 +148,4 @@ Interactive API documentation is available at `http://localhost:3000/api-docs` w
 - [ ] Search with debounce
 - [ ] Product reviews and ratings
 - [ ] Wishlist
+- [ ] PWA
