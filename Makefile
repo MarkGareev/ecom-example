@@ -1,34 +1,36 @@
-.PHONY: dev dev-down dev-logs up down logs db studio migrate push seed
+.PHONY: help dev down logs up prod-down prod-logs studio migrate push seed
 
-COMPOSE_DEV = docker compose -f docker/docker-compose.dev.yml --env-file .env
-COMPOSE_PROD = docker compose -f docker/docker-compose.yml --env-file .env
+COMPOSE_DEV  = docker compose -f docker/docker-compose.dev.yml
+COMPOSE_PROD = docker compose -f docker/docker-compose.yml
 
-# ─── Dev ─────────────────────────────────────────────────────────────────────
+# ─── Development ──────────────────────────────────────────────────────────────
 
 dev:
-	$(COMPOSE_DEV) up -d
-
-dev-down:
-	$(COMPOSE_DEV) down
-
-dev-logs:
-	$(COMPOSE_DEV) logs -f app
-
-# ─── Production ──────────────────────────────────────────────────────────────
-
-up:
-	$(COMPOSE_PROD) up -d --build
+	$(COMPOSE_DEV) down --remove-orphans
+	$(COMPOSE_DEV) up -d --build
 
 down:
-	$(COMPOSE_PROD) down
+	$(COMPOSE_DEV) down --remove-orphans
 
 logs:
+	$(COMPOSE_DEV) logs -f app
+
+# ─── Production ───────────────────────────────────────────────────────────────
+
+up:
+	$(COMPOSE_PROD) down --remove-orphans
+	$(COMPOSE_PROD) up -d --build
+
+prod-down:
+	$(COMPOSE_PROD) down --remove-orphans
+
+prod-logs:
 	$(COMPOSE_PROD) logs -f app
 
-# ─── Prisma ──────────────────────────────────────────────────────────────────
+# ─── Database ─────────────────────────────────────────────────────────────────
 
 studio:
-	pnpm db:studio
+	pnpm dotenvx run -f .env -- pnpm db:studio
 
 migrate:
 	pnpm db:migrate
@@ -38,3 +40,10 @@ push:
 
 seed:
 	pnpm db:seed
+
+# ─── Help ─────────────────────────────────────────────────────────────────────
+
+help:
+	@echo "Dev:        make dev | make down | make logs"
+	@echo "Prod:       make up  | make prod-down | make prod-logs"
+	@echo "Database:   make studio | make migrate | make push | make seed"
