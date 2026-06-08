@@ -2,6 +2,7 @@
   "name": "ecom-example",
   "type": "module",
   "private": true,
+  "packageManager": "pnpm@10.28.2",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
@@ -19,7 +20,7 @@
     "db:generate": "prisma generate --config config/prisma.config.ts",
     "db:migrate": "prisma migrate dev --config config/prisma.config.ts",
     "db:push": "prisma db push --config config/prisma.config.ts",
-    "db:studio": "prisma studio --config config/prisma.config.ts",
+    "db:studio": "prisma studio --config config/prisma.config.ts --port ${STUDIO_PORT:-5555}",
     "db:seed": "prisma db seed --config config/prisma.config.ts",
     "test": "vitest run --config config/vitest.config.ts",
     "test:watch": "vitest --config config/vitest.config.ts"
@@ -48,7 +49,6 @@
     "@pinia/nuxt": "^0.11.3",
     "@prisma/adapter-pg": "^7.8.0",
     "@prisma/client": "^7.8.0",
-    "@scalar/nuxt": "^0.6.42",
     "bcryptjs": "^3.0.3",
     "jose": "^6.2.3",
     "nuxt": "^4.4.7",
@@ -60,6 +60,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@dotenvx/dotenvx": "^1.71.0",
     "@nuxt/eslint": "^1.15.2",
     "@types/bcryptjs": "^3.0.0",
     "@types/node": "^25.9.2",
