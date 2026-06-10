@@ -1,7 +1,5 @@
 @use 'variables' as *;
 
-// ─── Responsive ──────────────────────────────────────────────────────────────
-
 @mixin respond-to($bp) {
   @if $bp == sm {
     @media (min-width: $bp-sm) {
@@ -17,10 +15,6 @@
     }
   } @else if $bp == xl {
     @media (min-width: $bp-xl) {
-      @content;
-    }
-  } @else if $bp == 2xl {
-    @media (min-width: $bp-2xl) {
       @content;
     }
   }
@@ -46,23 +40,6 @@
   }
 }
 
-// ─── Typography ──────────────────────────────────────────────────────────────
-
-@mixin text-truncate {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-@mixin text-clamp($lines) {
-  -webkit-box-orient: vertical;
-  display: -webkit-box;
-  -webkit-line-clamp: $lines;
-  overflow: hidden;
-}
-
-// ─── Layout ──────────────────────────────────────────────────────────────────
-
 @mixin flex-center {
   align-items: center;
   display: flex;
@@ -81,52 +58,63 @@
 }
 
 @mixin square($size) {
+  flex-shrink: 0;
   height: $size;
   width: $size;
 }
 
-// ─── Visuals ─────────────────────────────────────────────────────────────────
-
-@mixin focus-ring($color: $color-accent) {
-  outline: 2px solid $color;
-  outline-offset: 2px;
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-@mixin hover-lift {
+@mixin text-clamp($lines) {
+  -webkit-box-orient: vertical;
+  display: -webkit-box;
+  -webkit-line-clamp: $lines;
+  overflow: hidden;
+}
+
+@mixin card-hover {
   transition:
     transform $transition-base,
     box-shadow $transition-base;
 
   &:hover {
-    box-shadow: $shadow-lg;
-    transform: translateY(-2px);
+    box-shadow: $shadow-card;
+    transform: translateY(-3px);
   }
 }
 
-@mixin overlay($opacity: 0.5) {
-  &::after {
-    background-color: rgba($color-black, $opacity);
-    content: '';
-    @include absolute-fill;
-  }
+@mixin focus-ring {
+  outline: 2px solid $color-accent;
+  outline-offset: 2px;
 }
 
-// ─── Scrollbar ───────────────────────────────────────────────────────────────
-
-@mixin custom-scrollbar($width: 6px, $track: $color-gray-100, $thumb: $color-gray-300) {
-  scrollbar-color: $thumb $track;
+@mixin scrollbar-thin {
+  scrollbar-color: $color-scroll-thumb transparent;
   scrollbar-width: thin;
 
   &::-webkit-scrollbar {
-    width: $width;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: $track;
+    height: 4px;
+    width: 4px;
   }
 
   &::-webkit-scrollbar-thumb {
-    background-color: $thumb;
+    background-color: $color-scroll-thumb;
     border-radius: $radius-full;
+
+    &:hover {
+      background-color: $color-scroll-thumb-hover;
+    }
+  }
+}
+
+@mixin scrollbar-hidden {
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
