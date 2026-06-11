@@ -1,9 +1,13 @@
 // @ts-check
+import prettierConfig from 'eslint-config-prettier'
 import withNuxt from './.nuxt/eslint.config.mjs'
 
-export default withNuxt({
-  rules: {
-    'vue/multi-word-component-names': 'off',
-    'no-console': ['warn', { allow: ['warn', 'error'] }],
+export default withNuxt(
+  {
+    rules: {
+      'vue/multi-word-component-names': 'off',
+      'no-console': ['warn', { allow: ['warn', 'error'] }],
+    },
   },
-})
+  prettierConfig,
+)
