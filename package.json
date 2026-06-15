@@ -23,7 +23,9 @@
     "db:studio": "prisma studio --config config/prisma.config.ts --port ${STUDIO_PORT:-5555}",
     "db:seed": "prisma db seed --config config/prisma.config.ts",
     "test": "vitest run --config config/vitest.config.ts",
-    "test:watch": "vitest --config config/vitest.config.ts"
+    "test:watch": "vitest --config config/vitest.config.ts",
+    "test:ui": "vitest run --config config/vitest.ui.config.ts",
+    "test:ui:watch": "vitest --config config/vitest.ui.config.ts"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"
@@ -62,13 +64,16 @@
   "devDependencies": {
     "@dotenvx/dotenvx": "^1.71.0",
     "@nuxt/eslint": "^1.15.2",
+    "@nuxt/test-utils": "^4.0.3",
     "@types/bcryptjs": "^3.0.0",
     "@types/node": "^25.9.2",
     "@types/pg": "^8.20.0",
     "@vitest/coverage-v8": "^4.1.8",
+    "@vue/test-utils": "^2.4.11",
     "dotenv": "^17.4.2",
     "eslint": "^10.4.1",
     "eslint-config-prettier": "^10.1.8",
+    "happy-dom": "^20.10.6",
     "husky": "^9.1.7",
     "lint-staged": "^17.0.7",
     "postcss-html": "^1.8.1",
