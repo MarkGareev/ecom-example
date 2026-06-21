@@ -2,6 +2,16 @@
 
 A full-stack e-commerce application built as a portfolio project. Demonstrates modern web development practices with Nuxt 4, a REST API, PostgreSQL, and Feature-Sliced Design architecture.
 
+## Screenshots
+
+| Desktop — Catalog                                                           | Desktop — Cart                                                          |
+| --------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| ![Catalog](https://i.ibb.co/spVCpCT3/Screenshot-2026-06-22-at-16-59-27.png) | ![Cart](https://i.ibb.co/gsvcZ7m/Screenshot-2026-06-22-at-16-59-59.png) |
+
+| Mobile — Home                                                                   | Mobile — Cart                                                                   |
+| ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| ![Mobile Home](https://i.ibb.co/dwVY0hvC/Screenshot-2026-06-22-at-17-00-57.png) | ![Mobile Cart](https://i.ibb.co/yBKs9p9z/Screenshot-2026-06-22-at-17-01-20.png) |
+
 ## Tech Stack
 
 **Frontend**
