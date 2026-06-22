@@ -1,4 +1,5 @@
 export interface CartItem {
+  cartItemId: string
   id: string
   name: string
   slug: string

@@ -150,17 +150,13 @@
     ]
   })
 
-  function addToCart() {
+  async function addToCart() {
     if (!product.value) return
-    cart.add({
-      id: product.value.id,
-      name: product.value.name,
-      slug: product.value.slug,
-      price: finalPrice.value,
-      unit: 'pc.',
-      imageUrl: product.value.imageUrl ?? null,
-    })
-    cart.setQty(product.value.id, qty.value)
+    if (auth.isAuthenticated) {
+      await cart.serverAdd(auth.api, product.value.id, qty.value)
+    } else {
+      cart.localAdd(product.value, qty.value)
+    }
     router.push('/cart')
   }
 </script>

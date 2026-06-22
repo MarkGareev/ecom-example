@@ -32,7 +32,7 @@
           <AppStepper
             :model-value="item.quantity"
             size="sm"
-            @update:model-value="(v) => cart.setQty(item.id, v)"
+            @update:model-value="(v) => onSetQty(item, v)"
           />
           <span class="cart-item__total">
             {{ formatPrice(item.price * item.quantity) }}
@@ -41,7 +41,7 @@
             class="cart-item__remove"
             type="button"
             aria-label="Remove"
-            @click="cart.remove(item.id)"
+            @click="onRemove(item)"
           >
             <Icon name="trash" filled />
           </button>
@@ -73,9 +73,28 @@
   import AppButton from '~/shared/ui/AppButton.vue'
   import AppStepper from '~/shared/ui/AppStepper.vue'
   import { useCartStore } from '~/entities/cart/model/cart.store'
+  import { useAuthStore } from '~/shared/model/auth.store'
   import { formatPrice, pluralize } from '~/shared/lib'
+  import type { CartItem } from '~/entities/cart/model/cart.types'
 
   const cart = useCartStore()
+  const auth = useAuthStore()
+
+  async function onRemove(item: CartItem) {
+    if (auth.isAuthenticated) {
+      await cart.serverRemove(auth.api, item.cartItemId)
+    } else {
+      cart.localRemove(item.id)
+    }
+  }
+
+  async function onSetQty(item: CartItem, qty: number) {
+    if (auth.isAuthenticated) {
+      await cart.serverSetQty(auth.api, item.cartItemId, qty)
+    } else {
+      cart.localSetQty(item.id, qty)
+    }
+  }
 </script>
 
 <style scoped lang="scss">

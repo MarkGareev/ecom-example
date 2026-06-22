@@ -25,6 +25,7 @@
 <script setup lang="ts">
   import AppBadge from '~/shared/ui/AppBadge.vue'
   import { useCartStore } from '~/entities/cart/model/cart.store'
+  import { useAuthStore } from '~/shared/model/auth.store'
   import { formatPrice } from '~/shared/lib'
   import type { Product } from '~/shared/api/types'
 
@@ -33,6 +34,7 @@
   }>()
 
   const cart = useCartStore()
+  const auth = useAuthStore()
 
   const finalPrice = computed(() =>
     props.product.discount
@@ -40,15 +42,12 @@
       : props.product.price,
   )
 
-  function onAdd() {
-    cart.add({
-      id: props.product.id,
-      name: props.product.name,
-      slug: props.product.slug,
-      price: finalPrice.value,
-      unit: 'pc.',
-      imageUrl: props.product.imageUrl ?? null,
-    })
+  async function onAdd() {
+    if (auth.isAuthenticated) {
+      await cart.serverAdd(auth.api, props.product.id, 1)
+    } else {
+      cart.localAdd(props.product)
+    }
   }
 </script>
 

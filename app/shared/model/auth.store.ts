@@ -1,4 +1,5 @@
 import { ApiClient } from '~/shared/api/ApiClient'
+import { useCartStore } from '~/entities/cart/model/cart.store'
 import type { AuthUser, LoginPayload, RegisterPayload } from './auth.types'
 
 export const useAuthStore = defineStore('auth', () => {
@@ -12,15 +13,29 @@ export const useAuthStore = defineStore('auth', () => {
   api.setTokenRefresher(refresh)
 
   async function login(payload: LoginPayload) {
+    const cart = useCartStore()
+    const localItems = [...cart.items]
     const res = await api.auth.login(payload)
     accessToken.value = res.accessToken
     user.value = res.user
+    if (localItems.length) {
+      await cart.mergeLocalToServer(api, localItems)
+    } else {
+      await cart.fetchFromServer(api)
+    }
   }
 
   async function register(payload: RegisterPayload) {
+    const cart = useCartStore()
+    const localItems = [...cart.items]
     const res = await api.auth.register(payload)
     accessToken.value = res.accessToken
     user.value = res.user
+    if (localItems.length) {
+      await cart.mergeLocalToServer(api, localItems)
+    } else {
+      await cart.fetchFromServer(api)
+    }
   }
 
   async function refresh(): Promise<string | null> {
@@ -36,11 +51,13 @@ export const useAuthStore = defineStore('auth', () => {
   }
 
   async function logout() {
+    const cart = useCartStore()
     try {
       await api.auth.logout()
     } finally {
       accessToken.value = null
       user.value = null
+      cart.clear()
     }
   }
 
