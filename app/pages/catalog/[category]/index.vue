@@ -134,6 +134,8 @@
 </script>
 
 <style scoped lang="scss">
+  @use 'sass:color';
+
   .catalog {
     padding-bottom: $sp-16;
     padding-top: $sp-6;
@@ -235,7 +237,7 @@
       transition: background-color $transition-fast;
 
       &:hover {
-        background-color: darken(#f3e7e0, 5%);
+        background-color: color.adjust(#f3e7e0, $lightness: -5%);
       }
     }
 
