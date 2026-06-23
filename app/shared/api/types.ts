@@ -79,3 +79,17 @@ export interface CartItem {
   quantity: number
   product: Product
 }
+
+export interface Review {
+  id: string
+  rating: number
+  comment: string | null
+  createdAt: string
+  user: { id: string; name: string | null }
+}
+
+export interface ProductDetailWithReviews extends ProductDetail {
+  reviews: Review[]
+  avgRating: number | null
+  _count: { reviews: number }
+}

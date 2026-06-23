@@ -82,6 +82,11 @@ export const productSlugSchema = z.object({
   slug: z.string().min(1),
 })
 
+export const reviewPostSchema = z.object({
+  rating: z.number().int().min(1).max(5),
+  comment: z.string().min(1).max(1000).optional(),
+})
+
 export type ProductsQuery = z.infer<typeof productsQuerySchema>
 export type ArticlesQuery = z.infer<typeof articlesQuerySchema>
 export type CartPostBody = z.infer<typeof cartPostSchema>

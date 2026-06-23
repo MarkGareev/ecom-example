@@ -76,6 +76,63 @@
         </div>
       </div>
 
+      <section class="reviews">
+        <div class="reviews__head">
+          <h2 class="h2">Reviews</h2>
+          <span v-if="product.avgRating" class="reviews__avg">
+            ★ {{ product.avgRating.toFixed(1) }} · {{ product._count.reviews }}
+            {{ product._count.reviews === 1 ? 'review' : 'reviews' }}
+          </span>
+          <span v-else class="reviews__avg reviews__avg_empty">No reviews yet</span>
+        </div>
+
+        <div v-if="product.reviews.length" class="reviews__list">
+          <div v-for="r in product.reviews" :key="r.id" class="review-card">
+            <div class="review-card__top">
+              <span class="review-card__author">{{ r.user.name ?? 'Anonymous' }}</span>
+              <span class="review-card__stars"
+                >{{ '★'.repeat(r.rating) }}{{ '☆'.repeat(5 - r.rating) }}</span
+              >
+              <span class="review-card__date">{{ formatDate(r.createdAt) }}</span>
+            </div>
+            <p v-if="r.comment" class="review-card__comment">{{ r.comment }}</p>
+          </div>
+        </div>
+
+        <div v-if="auth.isAuthenticated && !hasUserReview" class="review-form">
+          <p class="review-form__title">Leave a Review</p>
+          <div class="review-form__stars">
+            <button
+              v-for="n in 5"
+              :key="n"
+              type="button"
+              class="review-form__star"
+              :class="{ 'review-form__star_active': n <= reviewForm.rating }"
+              @click="reviewForm.rating = n"
+            >
+              ★
+            </button>
+          </div>
+          <textarea
+            v-model="reviewForm.comment"
+            class="review-form__textarea"
+            placeholder="Share your experience (optional)"
+            rows="3"
+          />
+          <p v-if="reviewError" class="review-form__error">{{ reviewError }}</p>
+          <AppButton
+            size="md"
+            :disabled="reviewForm.rating === 0 || reviewPending"
+            @click="submitReview"
+          >
+            {{ reviewPending ? 'Submitting…' : 'Submit Review' }}
+          </AppButton>
+        </div>
+        <p v-else-if="!auth.isAuthenticated" class="reviews__login-hint">
+          <NuxtLink to="/account">Sign in</NuxtLink> to leave a review
+        </p>
+      </section>
+
       <section v-if="related.length" class="related">
         <h2 class="h2 related__title">Frequently Bought Together</h2>
         <div class="products-grid">
@@ -96,7 +153,7 @@
   import { useCartStore } from '~/entities/cart/model/cart.store'
   import { useAuthStore } from '~/shared/model/auth.store'
   import { formatPrice } from '~/shared/lib'
-  import type { Product, ProductDetail } from '~/shared/api/types'
+  import type { Product, ProductDetailWithReviews } from '~/shared/api/types'
 
   const route = useRoute()
   const auth = useAuthStore()
@@ -124,7 +181,7 @@
   const { data: productData, pending } = await useAsyncData(
     () => `product-${slug.value}`,
     () => auth.api.products.get(slug.value),
-    { default: (): ProductDetail | null => null },
+    { default: (): ProductDetailWithReviews | null => null },
   )
 
   const product = computed(() => productData.value)
@@ -158,6 +215,45 @@
       cart.localAdd(product.value, qty.value)
     }
     router.push('/cart')
+  }
+
+  const hasUserReview = computed(
+    () => !!auth.user && !!product.value?.reviews.some((r) => r.user.id === auth.user?.id),
+  )
+
+  const reviewForm = reactive({ rating: 0, comment: '' })
+  const reviewPending = ref(false)
+  const reviewError = ref('')
+
+  async function submitReview() {
+    if (!product.value || reviewForm.rating === 0) return
+    reviewError.value = ''
+    reviewPending.value = true
+    try {
+      const review = await auth.api.products.createReview(slug.value, {
+        rating: reviewForm.rating,
+        comment: reviewForm.comment || undefined,
+      })
+      product.value.reviews.unshift(review)
+      product.value._count.reviews++
+      const total = product.value.reviews.reduce((s, r) => s + r.rating, 0)
+      product.value.avgRating = total / product.value.reviews.length
+      reviewForm.rating = 0
+      reviewForm.comment = ''
+    } catch (err: unknown) {
+      reviewError.value =
+        (err as { data?: { message?: string } })?.data?.message ?? 'Failed to submit review'
+    } finally {
+      reviewPending.value = false
+    }
+  }
+
+  function formatDate(iso: string) {
+    return new Date(iso).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    })
   }
 </script>
 
@@ -371,6 +467,139 @@
       font-size: $font-size-base;
       font-weight: $font-weight-medium;
       text-align: right;
+    }
+  }
+
+  .reviews {
+    margin-bottom: $sp-12;
+    margin-top: $sp-12;
+
+    &__head {
+      align-items: baseline;
+      display: flex;
+      gap: $sp-4;
+      margin-bottom: $sp-6;
+    }
+
+    &__avg {
+      color: $color-ink-muted;
+      font-size: $font-size-base;
+
+      &_empty {
+        font-style: italic;
+      }
+    }
+
+    &__list {
+      display: flex;
+      flex-direction: column;
+      gap: $sp-3;
+      margin-bottom: $sp-8;
+    }
+
+    &__login-hint {
+      color: $color-ink-muted;
+      font-size: $font-size-base;
+      margin-top: $sp-6;
+
+      a {
+        color: $color-accent;
+        font-weight: $font-weight-medium;
+      }
+    }
+  }
+
+  .review-card {
+    background-color: $color-surface;
+    border-radius: $radius-lg;
+    padding: $sp-5;
+
+    &__top {
+      align-items: center;
+      display: flex;
+      flex-wrap: wrap;
+      gap: $sp-3;
+      margin-bottom: $sp-2;
+    }
+
+    &__author {
+      font-size: $font-size-base;
+      font-weight: $font-weight-semibold;
+    }
+
+    &__stars {
+      color: #f5a623;
+      font-size: $font-size-base;
+      letter-spacing: 2px;
+    }
+
+    &__date {
+      color: $color-ink-subtle;
+      font-size: $font-size-sm;
+      margin-left: auto;
+    }
+
+    &__comment {
+      color: $color-ink-muted;
+      font-size: $font-size-base;
+      line-height: $line-height-relaxed;
+    }
+  }
+
+  .review-form {
+    background-color: $color-surface;
+    border-radius: $radius-xl;
+    display: flex;
+    flex-direction: column;
+    gap: $sp-4;
+    margin-top: $sp-6;
+    max-width: 560px;
+    padding: $sp-6;
+
+    &__title {
+      font-size: $font-size-xl;
+      font-weight: $font-weight-bold;
+    }
+
+    &__stars {
+      display: flex;
+      gap: $sp-1;
+    }
+
+    &__star {
+      color: $color-border;
+      cursor: pointer;
+      font-size: 28px;
+      line-height: 1;
+      transition: color $transition-fast;
+
+      &:hover,
+      &_active {
+        color: #f5a623;
+      }
+    }
+
+    &__textarea {
+      border: 1px solid $color-border;
+      border-radius: $radius-md;
+      color: $color-ink;
+      font-family: $font-body;
+      font-size: $font-size-base;
+      line-height: $line-height-relaxed;
+      padding: $sp-3;
+      resize: vertical;
+      transition: border-color $transition-fast;
+      width: 100%;
+
+      &:focus {
+        border-color: $color-accent;
+        outline: none;
+      }
+    }
+
+    &__error {
+      color: #c0392b;
+      font-size: $font-size-base;
     }
   }
 

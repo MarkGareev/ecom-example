@@ -5,12 +5,13 @@ import type {
   AuthUser,
   AuthResponse,
   Product,
-  ProductDetail,
+  ProductDetailWithReviews,
   ProductsQuery,
   PaginatedResponse,
   Category,
   Order,
   CartItem,
+  Review,
 } from './types'
 
 export class ApiClient {
@@ -114,9 +115,12 @@ export class ApiClient {
         params as Record<string, string | number | boolean | undefined>,
       ),
 
-    get: (slug: string) => this.get<ProductDetail>(`/products/${slug}`),
+    get: (slug: string) => this.get<ProductDetailWithReviews>(`/products/${slug}`),
 
     related: (slug: string) => this.get<Product[]>(`/products/${slug}/related`),
+
+    createReview: (slug: string, body: { rating: number; comment?: string }) =>
+      this.post<Review>(`/products/${slug}/reviews`, body),
   }
 
   readonly categories = {
