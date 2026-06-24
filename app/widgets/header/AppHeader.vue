@@ -59,7 +59,14 @@
   const cart = useCartStore()
   const route = useRoute()
   const router = useRouter()
-  const searchQuery = ref('')
+  const searchQuery = ref((route.query.q as string) ?? '')
+
+  watch(
+    () => route.query.q,
+    (q) => {
+      searchQuery.value = (q as string) ?? ''
+    },
+  )
 
   const categories = [
     { name: 'Cookware', slug: 'cookware' },
@@ -73,8 +80,11 @@
   ]
 
   function onSearch() {
-    if (searchQuery.value.trim()) {
-      router.push({ path: '/catalog', query: { q: searchQuery.value.trim() } })
+    const q = searchQuery.value.trim()
+    if (q) {
+      router.push({ path: '/catalog', query: { q } })
+    } else {
+      router.push('/catalog')
     }
   }
 </script>

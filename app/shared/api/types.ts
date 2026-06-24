@@ -9,7 +9,7 @@ export interface ProductsQuery {
   sort?: string
   order?: 'asc' | 'desc'
   category?: string
-  q?: string
+  search?: string
 }
 
 export interface AuthUser {
