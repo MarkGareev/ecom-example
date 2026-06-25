@@ -12,6 +12,8 @@ import type {
   Order,
   CartItem,
   Review,
+  Article,
+  ArticleDetail,
 } from './types'
 
 export class ApiClient {
@@ -142,5 +144,12 @@ export class ApiClient {
     update: (id: string, body: { quantity: number }) => this.patch<CartItem>(`/cart/${id}`, body),
 
     remove: (id: string) => this.delete<Record<string, never>>(`/cart/${id}`),
+  }
+
+  readonly articles = {
+    list: (params?: { page?: number; limit?: number }) =>
+      this.get<PaginatedResponse<Article>>('/articles', params),
+
+    get: (slug: string) => this.get<ArticleDetail>(`/articles/${slug}`, undefined),
   }
 }

@@ -22,7 +22,10 @@
             <div v-else class="cart-item__placeholder" />
           </div>
           <div class="cart-item__info">
-            <NuxtLink :to="`/catalog/${item.slug}`" class="cart-item__name">
+            <NuxtLink
+              :to="`/catalog/${item.categorySlug ?? '_'}/${item.slug}`"
+              class="cart-item__name"
+            >
               {{ item.name }}
             </NuxtLink>
             <span class="cart-item__unit-price">

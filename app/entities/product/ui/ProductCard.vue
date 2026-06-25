@@ -1,5 +1,5 @@
 <template>
-  <NuxtLink :to="`/catalog/${product.slug}`" class="card">
+  <NuxtLink :to="`/catalog/${product.category?.slug ?? '_'}/${product.slug}`" class="card">
     <div class="card__image">
       <img v-if="product.imageUrl" :src="product.imageUrl" :alt="product.name" />
       <div v-else class="card__placeholder" />

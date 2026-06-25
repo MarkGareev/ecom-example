@@ -1,33 +1,26 @@
 import type { CartItem } from './cart.types'
 import type { CartItem as ApiCartItem, Product } from '~/shared/api/types'
 
-function fromApi(item: ApiCartItem): CartItem {
-  const { product } = item
-  const price = product.discount ? product.price * (1 - product.discount / 100) : product.price
-  return {
-    cartItemId: item.id,
-    id: product.id,
-    name: product.name,
-    slug: product.slug,
-    price,
-    unit: 'pc.',
-    imageUrl: product.imageUrl,
-    quantity: item.quantity,
-  }
+function finalPrice(p: Product) {
+  return p.discount ? p.price * (1 - p.discount / 100) : p.price
 }
 
-function fromProduct(product: Product, quantity = 1): CartItem {
-  const price = product.discount ? product.price * (1 - product.discount / 100) : product.price
+function fromProduct(product: Product, quantity = 1, cartItemId = ''): CartItem {
   return {
-    cartItemId: '',
+    cartItemId,
     id: product.id,
     name: product.name,
     slug: product.slug,
-    price,
+    categorySlug: product.category?.slug ?? null,
+    price: finalPrice(product),
     unit: 'pc.',
     imageUrl: product.imageUrl,
     quantity,
   }
+}
+
+function fromApi(item: ApiCartItem): CartItem {
+  return fromProduct(item.product, item.quantity, item.id)
 }
 
 export const useCartStore = defineStore('cart-store', () => {

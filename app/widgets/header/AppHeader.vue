@@ -16,6 +16,9 @@
         </div>
 
         <div class="header__actions">
+          <NuxtLink to="/articles" class="header__icon-btn header__icon-btn_text" aria-label="Blog">
+            Blog
+          </NuxtLink>
           <NuxtLink to="/account" class="header__icon-btn" aria-label="Account">
             <Icon name="user" filled />
           </NuxtLink>
@@ -128,6 +131,13 @@
 
       &:hover {
         border-color: $color-accent;
+      }
+
+      &_text {
+        font-size: $font-size-base;
+        font-weight: $font-weight-medium;
+        padding-inline: $sp-3;
+        width: auto;
       }
     }
 

@@ -88,6 +88,21 @@ export interface Review {
   user: { id: string; name: string | null }
 }
 
+export interface Article {
+  id: string
+  title: string
+  slug: string
+  excerpt: string | null
+  imageUrl: string | null
+  publishedAt: string | null
+}
+
+export interface ArticleDetail extends Article {
+  content: string
+  createdAt: string
+  updatedAt: string
+}
+
 export interface ProductDetailWithReviews extends ProductDetail {
   reviews: Review[]
   avgRating: number | null
